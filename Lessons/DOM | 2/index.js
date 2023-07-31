@@ -1,4 +1,4 @@
-import { data } from "./mock.js";
+import mockData from "./mock.js";
 // const box = document.createElement("div");
 // box.innerHTML = "<a href='#'>Link</a>";
 
@@ -30,19 +30,20 @@ import { data } from "./mock.js";
 // console.log(data);
 
 //Crud
+let data =mockData
 const body = document.querySelector("#body");
 const list = document.createElement("div");
 
-const displayData = (data) => {
+const displayData = (info) => {
   list.innerHTML = "";
-  data.map((user) => {
+  info.map((user) => {
     const userElement = document.createElement("h3");
     const onDelete = (data, id) => {
-      let result = [];
-      result = data.filter((user) => {
+      data = info.filter((user) => {
         return user.id !== id;
       });
-      displayData(result);
+      
+      displayData(data);
     };
     const button = document.createElement("button");
     button.innerText = "delete";
@@ -60,24 +61,38 @@ body.append(list);
 
 const sortButton = document.querySelector("#sort");
 
-const sort = (data) => {
-  let res = [];
-  res = data.sort((a, b) => {
+const sort = () => {
+  
+  data = data.sort((a, b) => {
     return a.fullname.localeCompare(b.fullname);
   });
-  displayData(res);
+  displayData(data);
 };
 sortButton.onclick = () => sort(data);
 
 // Search
-const searchInput = document.querySelector("#searchInput")
-searchInput.oninput=({target:{value}})=>{
-  value= value.toLocaleLowerCase()
-  let res=[]
-  res= data.filter((user)=>{
-    return user.fullname.toLocaleLowerCase().includes(value)
-  })
-  displayData(res)
-}
+const searchInput = document.querySelector("#searchInput");
+searchInput.oninput = ({ target: { value } }) => {
+  value = value.toLocaleLowerCase();
+  let res = [];
+  res = data.filter((user) => {
+    return user.fullname.toLocaleLowerCase().includes(value);
+  });
+  displayData(res);
+};
 
 //Add
+
+const addButton = document.querySelector("#add");
+const addInput = document.querySelector("#addInput");
+let newName = "";
+addInput.oninput = ({ target: { value } }) => {
+  newName = value;
+};
+const addUser = () => {
+ 
+  data = [...data, { id: data.length + 1, fullname: newName }];
+  displayData(data);
+  addInput.value = "";
+};
+addButton.onclick = () => addUser();
